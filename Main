@@ -6,45 +6,49 @@ import string
 def print_Menu():
     print("Main Menu:\n\n1. Cinema Booking Admin\n2.Display Cinema\n3.Book Seat\n4. Display Screen\n5. Exit")
     choice = input("Choose function : ")
-    #Finish when I done the other functions
+    #Finish when I done the other functionscinema_Screens = {}
 
+cinema_screens = []
 
 def main():
     screensStr = input("How many screens : ")
     screens = int(screensStr)
     for i in range(screens):
+        screenName = input("What is the screen name?")
         while True:
             rowsStr = input("How many rows? (Max 26 Min 1): ")
             rows = int(rowsStr)
             if 1 <= rows <= 26:
-                break
+                break            
             else:
                 print("Out of range")
-        
         while True:
             colStr = input("How many collumns? (Max 40 Min 1): ")
             col = int(colStr)
             if 1 <= col <= 40:
-                break
+                break            
             else:
                 print("Out of range")
-    
-        #List stuff
-
-        fmt = '{:<1}'
-        screen_List = [[[0 for k in range(col)] for j in range(rows)] for i in range(screens)]
-        
-        myRow = ord('A') 
-        print("     1   2   3   4   5   6   7   8   9") 
+        #List stuff        
+        gridScreen = [[0 for x in range (col)] for y in range(rows)] 
+        for counter in range(rows): 
+            for i in range(col): 
+                gridScreen[counter][i] = 'E'        
+                myRow = ord('A')
+        print("   ", end=" ")
+        for i in range(col): #stuff that does numbers            
+            print(str([i + 1]).ljust(4), end="")
+        print()
         for counter in range(rows): 
             print (chr(myRow), end="    ") 
             for i in range(col): 
-                print(screen_List[counter][i], end="   ") 
-            myRow = myRow +1 
+                print(gridScreen[counter][i], end="   ") 
+            myRow = myRow +1            
             print() 
         print() 
         print() 
-
+        cinema_screens.append({screenName,rows,col})
+    print(cinema_screens)
 
 os.system("cls")
 main()
