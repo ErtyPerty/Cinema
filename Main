@@ -3,6 +3,8 @@ import time
 import random
 import string
 
+#MAIN FUNCTIONS
+
 def print_Menu():
     print("Main Menu:\n\n1. Cinema Booking Admin\n2.Display Cinema\n3.Book Seat\n4. Display Screen\n5. Exit")
     choice = input("Choose function : ")
@@ -10,11 +12,13 @@ def print_Menu():
 
 cinema_screens = []
 
+#MAIN
 def main():
     screensStr = input("How many screens : ")
     screens = int(screensStr)
     for i in range(screens):
         screenName = input("What is the screen name?")
+        #LOOP THROUGH ROWS AND GENERATE 1 FOR EACH TO BE PRINTED LATER
         while True:
             rowsStr = input("How many rows? (Max 26 Min 1): ")
             rows = int(rowsStr)
@@ -23,6 +27,7 @@ def main():
             else:
                 print("Out of range")
         while True:
+        #SAME AS THE ROWS, EXCEPT IT ITTERATES THROUGH COLUMNS
             colStr = input("How many collumns? (Max 40 Min 1): ")
             col = int(colStr)
             if 1 <= col <= 40:
@@ -30,25 +35,27 @@ def main():
             else:
                 print("Out of range")
         #List stuff        
+        #DOWN HERE, WE PRINT OUT THE GRID AND FILL IT WITH E
         gridScreen = [[0 for x in range (col)] for y in range(rows)] 
         for counter in range(rows): 
             for i in range(col): 
                 gridScreen[counter][i] = 'E'        
                 myRow = ord('A')
         print("   ", end=" ")
-        for i in range(col): #stuff that does numbers            
+        for i in range(col): #stuff that does numbers  
+        #FORMAT PRINTING MAKES GAPS TO ALIGN EVERYTHING TO MAKE IT LOOK NICER
             print(str([i + 1]).ljust(4), end="")
         print()
         for counter in range(rows): 
-            print (chr(myRow), end="    ") 
+            print (chr(myRow), end="    ") #ACTUAL FORMAT PRINTING
             for i in range(col): 
                 print(gridScreen[counter][i], end="   ") 
             myRow = myRow +1            
             print() 
         print() 
         print() 
-        cinema_screens.append({screenName,rows,col})
+        cinema_screens.append({screenName,rows,col}) #ADDS THE DATA TO CINEMA_SCREENS LIST
     print(cinema_screens)
 
-os.system("cls")
-main()
+os.system("cls")#CLEAR THE SCREEN TO GET RID OF VS TECHNO BABBLE!
+main()#START FUNCTION
