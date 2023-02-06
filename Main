@@ -8,7 +8,7 @@ import string
 def print_Menu():
     print("Main Menu:\n\n1. Cinema Booking Admin\n2.Display Cinema\n3.Book Seat\n4. Display Screen\n5. Exit")
     choice = input("Choose function : ")
-    #Finish when I done the other functionscinema_Screens = {}
+    #Finish when I done the other functions in cinema_Screens = {}
 
 cinema_screens = []
 
