@@ -1,61 +1,132 @@
-import os
-import time
-import random
-import string
-
-#MAIN FUNCTIONS
-
-def print_Menu():
-    print("Main Menu:\n\n1. Cinema Booking Admin\n2.Display Cinema\n3.Book Seat\n4. Display Screen\n5. Exit")
-    choice = input("Choose function : ")
-    #Finish when I done the other functions in cinema_Screens = {}
-
-cinema_screens = []
-
-#MAIN
 def main():
-    screensStr = input("How many screens : ")
-    screens = int(screensStr)
-    for i in range(screens):
-        screenName = input("What is the screen name?")
-        #LOOP THROUGH ROWS AND GENERATE 1 FOR EACH TO BE PRINTED LATER
-        while True:
-            rowsStr = input("How many rows? (Max 26 Min 1): ")
-            rows = int(rowsStr)
-            if 1 <= rows <= 26:
-                break            
-            else:
-                print("Out of range")
-        while True:
-        #SAME AS THE ROWS, EXCEPT IT ITTERATES THROUGH COLUMNS
-            colStr = input("How many collumns? (Max 40 Min 1): ")
-            col = int(colStr)
-            if 1 <= col <= 40:
-                break            
-            else:
-                print("Out of range")
-        #List stuff        
-        #DOWN HERE, WE PRINT OUT THE GRID AND FILL IT WITH E
-        gridScreen = [[0 for x in range (col)] for y in range(rows)] 
-        for counter in range(rows): 
-            for i in range(col): 
-                gridScreen[counter][i] = 'E'        
-                myRow = ord('A')
-        print("   ", end=" ")
-        for i in range(col): #stuff that does numbers  
-        #FORMAT PRINTING MAKES GAPS TO ALIGN EVERYTHING TO MAKE IT LOOK NICER
-            print(str([i + 1]).ljust(4), end="")
-        print()
-        for counter in range(rows): 
-            print (chr(myRow), end="    ") #ACTUAL FORMAT PRINTING
-            for i in range(col): 
-                print(gridScreen[counter][i], end="   ") 
-            myRow = myRow +1            
-            print() 
-        print() 
-        print() 
-        cinema_screens.append({screenName,rows,col}) #ADDS THE DATA TO CINEMA_SCREENS LIST
-    print(cinema_screens)
+    import re
+    class Cinema:
+        def __init__(self):
+            self.screens = []
+            # Get number of screens
+            while True:
+                try:
+                    no_screens = int(input("How many screens are in this cinema?\n> "))
+                    if no_screens <= 0:
+                        print("Unacceptable entry, must be greater than or equal to 1")
+                        continue
+                    break
+                except ValueError:
+                    print("Unacceptable entry, must be a number.")
+            # Add given number of screens into this new cinema
+            for i in range(no_screens):
+                print("\nScreen %d" % (i + 1))
+                self.screens.append(Screen())
+        def find_screen(self):
+            if len(self.screens) == 1:return 0
+            while True:
+                    usr_ipt = input("Which screen would you like to view? (eg: 3A)\n> ").strip().upper()
+                    for index, value in enumerate(self.screens):
+                        if value.name == usr_ipt:
+                            return index
+                    else:
+                        print("Couldn't find that screen, please try again.")
+                        continue
+    class Screen:
+        def __init__(self):
+            # Get screen name
+            while True:
+                usr_ipt = input("Enter the name of the screen (eg: 3A)\n> ").upper().strip()
+                if not re.compile("^\d+[A-Z]?$").match(usr_ipt): # format check using regex
+                    print("Unacceptable entry, must be a number followed by a letter or entirely numbers.")
+                    continue
+                self.name = usr_ipt  
+                break
+            # Get number of rows
+            while True:
+                try:
+                    usr_ipt = int(input("Enter no. rows (max 26)\n> "))
+                    if not usr_ipt in range(1,27):
+                        print("Unacceptable entry, must be in the range of 1 - 26")
+                        continue
+                except ValueError:
+                    print("Unacceptable entry, must be a number.")
+                    continue
+                self.rows = usr_ipt
+                break
+            # Get number of columns
+            while True:
+                try:
+                    usr_ipt = int(input("Enter no. columns (max 40)\n> "))
+                    if not usr_ipt in range(1,41):
+                        print("Unacceptable entry, must be in the range of 1 - 40")
+                        continue
+                except ValueError:
+                    print("Unacceptable entry, must be a number.")
+                    continue
+                self.columns = usr_ipt
+                break
+            self.seats = [["x" for i in range(self.columns)] for x in range(self.rows)]
+        def show(self):
+            print(f"Screen - {self.name}".center(self.columns * 3 + 5)) # print screen name and center that
+            print(" " * 5, end = "")
+            for i in range(self.columns): # Write column numbers with equal spacing
+                print(str(i + 1).ljust(3), end = "")
+            print()
+            for row in range(self.rows):
+                print(chr(row + 65).ljust(5), end = "") # Write row letters
+                for column in range(self.columns):
+                    print(f'{self.seats[row][column]}'.ljust(3), end = "") # Write seat status with equal spacing
+                print()
+        def book(self):
+            while True:
+                self.show()
+                # Get row and column
+                while True:
+                    usr_ipt = input("Where would you like to sit? (eg: F2)\n> ").upper().strip()
+                    # format check using regex
+                    if not re.compile("^[A-Z]{1}[0-9]{1,2}$").match(usr_ipt): 
+                        print("Unacceptable input, please enter a letter followed by a number.")
+                        continue
+                    row = ord(usr_ipt[0]) - 65
+                    column = int(usr_ipt[1:]) - 1
+                    # range check
+                    if not(row in range(self.rows) and column in range(self.columns)):
+                        print("Unacceptable input, please choose one of the seats shown.")
+                        continue  
+                    # uniqueness check
+                    if self.seats[row][column] != "x":
+                        print("This seat has already been taken, choose again.")
+                        continue
+                    break
+                # Get patron type
+                while True:
+                    usr_ipt = input("Please choose patron type - A Adult, C Child, O Concession, S Student\n> ").upper().strip()
+                    if not usr_ipt in ["A", "C", "O", "S"]:
+                        print("Unacceptable entry, please enter a single letter from the list.")
+                        continue
+                    break
+                # Apply and show result
+                self.seats[row][column] = usr_ipt
+                self.show()
+                while True:
+                    usr_ipt = input("Book again? (y/n)\n> ").upper().strip()
+                    if usr_ipt == "N":
+                        return
+                    elif usr_ipt == "Y":
+                        break
+                    else:
+                        print("Unacceptable entry, please enter 'y' or 'n'.")
+    print("Cinema Booking Administration")
+    cinema1 = Cinema()
+    while True:
+        usr_ipt = input("Main Menu\n\n1 - Display Cinema\n2 - Book Seat\n3 - Display Screen\n4 - Exit\nChoose Function\n> ").strip()
+        match usr_ipt:
+            case "1":
+                for screen in cinema1.screens:screen.show()
+            case "2":
+                cinema1.screens[cinema1.find_screen()].book()
+            case "3":
+                cinema1.screens[cinema1.find_screen()].show()
+            case "4":
+                return
+if __name__ == "__main__":
+    main()
+has context menu
 
-os.system("cls")#CLEAR THE SCREEN TO GET RID OF VS TECHNO BABBLE!
-main()#START FUNCTION
+
